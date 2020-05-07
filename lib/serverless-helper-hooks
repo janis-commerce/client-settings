@@ -1,0 +1,19 @@
+'use strict';
+
+module.exports = ({ includes = [] } = {}) => [
+	[
+		'janis.api',
+		{
+			path: 'settings/{entity}',
+			method: 'put',
+			authorizer: 'FullAuthorizer',
+			cors: true,
+			package: {
+				include: [
+					'schemas/settings/index.js',
+					...includes
+				]
+			}
+		}
+	]
+];

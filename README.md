@@ -13,7 +13,7 @@ npm install @janiscommerce/client-settings
 
 ## API
 
-This package exports the following classes:
+This package exports the following modules:
 
 ### ClientSettings
 
@@ -53,6 +53,14 @@ The Error class that is rejected when getting a setting value.
 ### ClientIndexes
 
 The indexes of the `settings` table/collection, to be used along with [Mongodb Index Creator](https://www.npmjs.com/package/@janiscommerce/mongodb-index-creator) package, as per-client indexes.
+
+### ServerlessHelperHooks
+
+A function that returns the hooks to use with [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis).
+
+It receives an object as argument with the following optional properties:
+
+- `includes` To add som custom include in the `UpdateSettingsApi`
 
 ## Usage
 
