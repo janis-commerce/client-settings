@@ -62,6 +62,14 @@ It receives an object as argument with the following optional properties:
 
 - `includes` To add som custom include in the `UpdateSettingsApi`
 
+## OpenAPI Specification
+
+There is a demo of the OpenAPI specification for the `GetSettingsApi` and`UpdateSettingsApi` on [Github](https://github.com/janis-commerce/client-settings/tree/master/docs/schemas/setting). To implement them, remember to:
+
+- Replace `{YOUR-SERVICE}` in the `x-janis-permissions` in both schemas
+- Add this permission to you services permissions declarations
+- Add the `Settings` tag to you OpenAPI base file
+
 ## Usage
 
 To fetch the clients settings, you must use the `ClientSettings` class. You **must** always set a [session](https://npmjs.org/package/@janiscommerce/api-session) before fetching any setting.

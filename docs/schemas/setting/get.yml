@@ -1,0 +1,45 @@
+paths:
+
+  /setting/{entity}:
+    get:
+      x-janis-namespace: setting
+      x-janis-method: get
+      x-janis-permissions:
+        - {YOUR-SERVICE}:settings:get
+      operationId: getSetting
+      tags:
+        - Settings
+      summary: Get the setting of an entity
+      security:
+        - ApiKey: []
+          ApiSecret: []
+          JanisClient: []
+      parameters:
+        - name: entity
+          in: path
+          schema:
+            type: string
+            example: product
+          required: true
+          description: The name of the entity that owns the settings to be retrieved
+      responses:
+        '200':
+          description: The settings were retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A key-value object of the settings
+                additionalProperties: true
+                example:
+                  allowSomething: true
+                  defaultStatus: 'active'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
