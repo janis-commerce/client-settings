@@ -1,0 +1,9 @@
+components:
+
+  schemas:
+
+    Settings:
+      type: object
+      description: 'The Settings'
+      properties: {}
+      required: []

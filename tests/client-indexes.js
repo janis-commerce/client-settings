@@ -12,8 +12,7 @@ describe('Client indexes', () => {
 				{
 					name: 'setting',
 					key: {
-						entity: 1,
-						name: 1
+						entity: 1
 					},
 					unique: true
 				}

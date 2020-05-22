@@ -18,7 +18,7 @@ describe('Original Order Model', () => {
 
 		it('Should return the uniqueIndexes', async () => {
 			assert.deepStrictEqual(Model.uniqueIndexes, [
-				['entity', 'name']
+				['entity']
 			]);
 		});
 
