@@ -32,16 +32,13 @@ describe('Setting Api Put Tests', () => {
 
 	APITest(PutSettingApi, '/api/setting/wrongEntity', [
 		{
-			description: 'Should throws if the definition file its not found',
+			description: 'Should throw if the definition file its not found',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['wrongEntity'] },
 			session: true,
-			before: () => {
-				mockRequire('/path/to/unknown/file', undefined);
-			},
 			response: { code: 400 }
 		},
 		{
-			description: 'Should throws if the entity not found in the definition file',
+			description: 'Should throw if the entity not found in the definition file',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['wrongEntity'] },
 			session: true,
 			before: () => {
@@ -62,7 +59,7 @@ describe('Setting Api Put Tests', () => {
 			response: { code: 400 }
 		},
 		{
-			description: 'Should throws if cant save into the database',
+			description: 'Should throw if cant save into the database',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['sample-entity'] },
 			session: true,
 			before: sandbox => {

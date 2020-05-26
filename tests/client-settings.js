@@ -61,8 +61,6 @@ describe('ClientSettings', () => {
 
 	it('Should reject is setting definition is not found', async () => {
 
-		mockRequire('/path/to/unknown/file', undefined);
-
 		await assert.rejects(() => ClientSettings.setSession(session).get(entity, settingName), {
 			name: 'ClientSettingsError',
 			code: ClientSettingsError.codes.SETTING_DEFINITION_NOT_FOUND
@@ -73,10 +71,10 @@ describe('ClientSettings', () => {
 
 		mockRequire(defaultDefinitionPath, undefined);
 
-		await assert.rejects(() => ClientSettings
-			.setSession(session)
-			.get(entity, settingName)
-		);
+		await assert.rejects(() => ClientSettings.setSession(session).get(entity, settingName), {
+			name: 'ClientSettingsError',
+			code: ClientSettingsError.codes.SETTING_DOES_NOT_EXIST
+		});
 	});
 
 	it('Should use a custom definition path if it is set', async () => {
