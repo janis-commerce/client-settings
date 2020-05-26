@@ -42,13 +42,13 @@ describe('Setting Api Get Tests', () => {
 
 	APITest(GetSettingApi, '/api/setting/wrongEntity', [
 		{
-			description: 'should throw if the definition file its not found',
+			description: 'Should throw if the definition file its not found',
 			request: { pathParameters: ['wrongEntity'] },
 			session: true,
 			response: { code: 400 }
 		},
 		{
-			description: 'should throw if the entity not found in the definition file',
+			description: 'Should throw if the entity not found in the definition file',
 			before: () => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 			},
@@ -57,7 +57,7 @@ describe('Setting Api Get Tests', () => {
 			response: { code: 400 }
 		},
 		{
-			description: 'should throw if the client setting model fails getting the settings',
+			description: 'Should throw if the client setting model fails getting the settings',
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'get');
@@ -71,7 +71,7 @@ describe('Setting Api Get Tests', () => {
 
 	APITest(GetSettingApi, '/api/setting/sample-entity', [
 		{
-			description: 'should returns settings OK',
+			description: 'Should returns settings OK',
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'getBy');
@@ -85,7 +85,7 @@ describe('Setting Api Get Tests', () => {
 			}
 		},
 		{
-			description: 'should returns the settings with including the client settings model',
+			description: 'Should returns the settings with including the client settings model',
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'getBy');
