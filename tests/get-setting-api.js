@@ -33,6 +33,7 @@ describe('Setting Api Get Tests', () => {
 		id: 'id',
 		entity: 'sample-entity',
 		values: {
+			'non-existent-setting': 1,
 			'other-sample-setting': 1
 		}
 	};
@@ -77,7 +78,7 @@ describe('Setting Api Get Tests', () => {
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'getBy');
-				ClientSettingsModel.prototype.getBy.resolves([]);
+				ClientSettingsModel.prototype.getBy.resolves({});
 			},
 			request: { pathParameters: ['sample-entity'] },
 			session: true,

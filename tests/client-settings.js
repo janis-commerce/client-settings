@@ -49,6 +49,7 @@ describe('ClientSettings', () => {
 
 	afterEach(() => {
 		sinon.restore();
+		mockRequire.stopAll();
 	});
 
 	it('Should reject is no session is set', async () => {
@@ -76,10 +77,6 @@ describe('ClientSettings', () => {
 			.setSession(session)
 			.get(entity, settingName)
 		);
-
-		// const cwd = process.cwd();
-
-		// sinon.assert.calledOnceWithExactly(mock1, `${cwd}/schemas/settings`, sinon.match.func);
 	});
 
 	it('Should use a custom definition path if it is set', async () => {
@@ -91,8 +88,6 @@ describe('ClientSettings', () => {
 			.setSession(session)
 			.get(entity, settingName)
 		);
-
-		// sinon.assert.calledOnceWithExactly(readFileStub, '/custom/path', sinon.match.func);
 	});
 
 	it('Should reject if requested setting entity does not exist', async () => {

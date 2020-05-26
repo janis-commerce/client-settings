@@ -32,7 +32,7 @@ describe('Setting Api Put Tests', () => {
 
 	APITest(PutSettingApi, '/api/setting/wrongEntity', [
 		{
-			description: 'should throws if the definition file its not found',
+			description: 'Should throws if the definition file its not found',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['wrongEntity'] },
 			session: true,
 			before: () => {
@@ -41,7 +41,7 @@ describe('Setting Api Put Tests', () => {
 			response: { code: 400 }
 		},
 		{
-			description: 'should throws if the entity not found in the definition file',
+			description: 'Should throws if the entity not found in the definition file',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['wrongEntity'] },
 			session: true,
 			before: () => {
@@ -62,7 +62,7 @@ describe('Setting Api Put Tests', () => {
 			response: { code: 400 }
 		},
 		{
-			description: 'should throws if cant save into the database',
+			description: 'Should throws if cant save into the database',
 			request: { data: { ...settingsDefinitionRequestData }, pathParameters: ['sample-entity'] },
 			session: true,
 			before: sandbox => {
@@ -79,7 +79,7 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
-			description: 'should save the new setting',
+			description: 'Should save the new setting',
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'save');
@@ -96,13 +96,30 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
-			description: 'should save the new settings and exclude those that are equal to default',
+			description: 'Should save the new settings and exclude those that are equal to default',
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'save');
 				ClientSettingsModel.prototype.save.resolves({ id: 'some-id' });
 			},
 			request: { data: { ...settingsDefinitionRequestData, 'other-sample-setting': 0 }, pathParameters: ['sample-entity'] },
+			session: true,
+			response: { code: 200 },
+			after: (response, sandbox) => {
+				sandbox.assert.calledOnceWithExactly(ClientSettingsModel.prototype.save, {
+					entity: 'sample-entity',
+					values: { ...settingsDefinitionRequestData }
+				});
+			}
+		},
+		{
+			description: 'Should save the new settings and exclude those that are non existent in definition file',
+			before: sandbox => {
+				mockRequire(defaultDefinitionPath, settingsDefinition);
+				sandbox.stub(ClientSettingsModel.prototype, 'save');
+				ClientSettingsModel.prototype.save.resolves({ id: 'some-id' });
+			},
+			request: { data: { ...settingsDefinitionRequestData, 'non-existent-setting': 1 }, pathParameters: ['sample-entity'] },
 			session: true,
 			response: { code: 200 },
 			after: (response, sandbox) => {
