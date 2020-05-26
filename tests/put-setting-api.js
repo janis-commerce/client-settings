@@ -53,7 +53,7 @@ describe('Setting Api Put Tests', () => {
 
 	APITest(PutSettingApi, '/api/setting/sample-entity', [
 		{
-			description: 'should throws if the entity not found in the definition file',
+			description: 'Should throw if a setting value is invalid',
 			request: { data: { 'sample-setting': { foo: 'bar' } }, pathParameters: ['sample-entity'] },
 			session: true,
 			before: () => {
