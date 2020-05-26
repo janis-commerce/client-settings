@@ -43,9 +43,6 @@ describe('Setting Api Get Tests', () => {
 	APITest(GetSettingApi, '/api/setting/wrongEntity', [
 		{
 			description: 'should throw if the definition file its not found',
-			before: () => {
-				mockRequire('/path/to/unknown/file', undefined);
-			},
 			request: { pathParameters: ['wrongEntity'] },
 			session: true,
 			response: { code: 400 }
