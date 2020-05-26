@@ -105,6 +105,8 @@ module.exports = {
 For example:
 
 ```js
+const { struct } = require('@janiscommerce/superstruct');
+
 module.exports = {
 	product: {
 		defaultStatus: {
