@@ -6,3 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.0] - 2020-05-27
+### Added
+- First package version
+- APIs GET and PUT
+- `sls-helper` hooks
+- Mongodb indexes
+- `ClientSettings` handler to use settings
+- Sample API and view schemas
