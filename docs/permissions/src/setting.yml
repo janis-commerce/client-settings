@@ -1,0 +1,5 @@
+setting:
+  - action: read
+    description: Allows to read the current settings
+  - action: write
+    description: Allows to update the current settings

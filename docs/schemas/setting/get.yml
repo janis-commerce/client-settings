@@ -5,7 +5,7 @@ paths:
       x-janis-namespace: setting
       x-janis-method: get
       x-janis-permissions:
-        - {YOUR-SERVICE}:settings:get
+        - your-service:setting:get # Replace
       operationId: getSetting
       tags:
         - Settings

@@ -4,7 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/janis-commerce/client-settings/badge.svg?branch=master)](https://coveralls.io/github/janis-commerce/client-settings?branch=master)
 [![npm version](https://badge.fury.io/js/%40janiscommerce%2Fclient-settings.svg)](https://www.npmjs.com/package/@janiscommerce/client-settings)
 
-A package to handle client settings
+A package to handle client settings. This package allows you to declare all the settings available for each entity of your service.
+
+It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), unique indexes definitions for [Mongodb Index Creator](https://www.npmjs.com/package/@janiscommerce/mongodb-index-creator), etc.
 
 ## Installation
 ```sh
@@ -101,6 +103,15 @@ module.exports = helper({
 		// other hooks
 
 		...ServerlessHelperHooks()
+
+		// You can pass an object that acceps an array of manual includes for you APIs.
+		// For example:
+		// ...ServerlessHelperHooks({
+		// 	includes: [
+		// 		'some/file/path'
+		// 	]
+		// })
+
 	]
 });
 ```
@@ -118,14 +129,12 @@ module.exports = GetSettingApi;
 
 ```js
 // src/api/setting/put.js
-const { PuSettingApi } = require('@janiscommerce/client-settings');
+const { PutSettingApi } = require('@janiscommerce/client-settings');
 
-module.exports = PuSettingApi;
+module.exports = PutSettingApi;
 ```
 
-- The schemas for every API:
-
-The Base Schema: [`base.yml`](docs/schemas/setting/base.yml)
+- The schemas for both APIs:
 
 The GET Schema: [`get.yml`](docs/schemas/setting/get.yml)
 
@@ -135,11 +144,15 @@ The PUT Schema: [`put.yml`](docs/schemas/setting/put.yml)
 
 Here's an example that you must customize with your own settings: [`edit.yml`](docs/view-schemas/setting/edit.yml)
 
-## API
+### Important!
 
-This package exports the following modules:
+- Remember you replace `your-service` for your actual service name in both API Schemas and in the view schema.
+- Remember to add the `Settings` tag to your API schema.
+- And remember to add the permissions to you [permissions definition](docs/permissions/src/setting.yml)!
 
-### ClientSettings
+## ClientSettings API
+
+`const { ClientSettings } = require('@janiscommerce/client-settings');`
 
 To fetch client settings or their default values.
 
@@ -169,27 +182,3 @@ Rejects a `ClientSettingsError` if one of the following errors occur:
 
 If a setting value is not present in the `settings` DB table/collection, it will return the default value, defined in the definition file.
 Alsoo, the class automatically caches the values of each setting once they are required.
-
-### ClientSettingsError
-
-The Error class that is rejected when getting a setting value.
-
-### ClientIndexes
-
-The indexes of the `settings` table/collection, to be used along with [Mongodb Index Creator](https://www.npmjs.com/package/@janiscommerce/mongodb-index-creator) package, as per-client indexes.
-
-### ServerlessHelperHooks
-
-A function that returns the hooks to use with [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis).
-
-It receives an object as argument with the following optional properties:
-
-- `includes` To add some custom include in the `UpdateSettingsApi`
-
-## OpenAPI Specification
-
-There is a demo of the OpenAPI specification for the `GetSettingsApi` and`UpdateSettingsApi` on [Github](https://github.com/janis-commerce/client-settings/tree/master/docs/schemas/setting). To implement them, remember to:
-
-- Replace `{YOUR-SERVICE}` in the `x-janis-permissions` in both schemas
-- Add this permission to you services permissions declarations
-- Add the `Settings` tag to you OpenAPI base file
