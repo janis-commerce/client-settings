@@ -11,7 +11,21 @@ describe('Servelress Helper Hooks', () => {
 		[
 			'janis.api',
 			{
-				path: 'settings/{entity}',
+				path: 'setting/{entity}',
+				method: 'get',
+				authorizer: 'FullAuthorizer',
+				cors: true,
+				package: {
+					include: [
+						'schemas/settings/index.js'
+					]
+				}
+			}
+		],
+		[
+			'janis.api',
+			{
+				path: 'setting/{entity}',
 				method: 'put',
 				authorizer: 'FullAuthorizer',
 				cors: true,
@@ -41,6 +55,8 @@ describe('Servelress Helper Hooks', () => {
 		const customConfig = cloneDeep(defaultConfig);
 		customConfig[0][1].package.include.push('foo');
 		customConfig[0][1].package.include.push('bar');
+		customConfig[1][1].package.include.push('foo');
+		customConfig[1][1].package.include.push('bar');
 
 		assert.deepStrictEqual(ServerlessHelperHooks({ includes: ['foo', 'bar'] }), customConfig);
 	});

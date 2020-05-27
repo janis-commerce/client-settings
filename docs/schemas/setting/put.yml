@@ -19,7 +19,7 @@ paths:
           in: path
           schema:
             type: string
-            example: product
+            example: entityName
           required: true
           description: The name of the entity that owns the settings to be updated
       requestBody:

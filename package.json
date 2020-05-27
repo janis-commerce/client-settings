@@ -18,12 +18,14 @@
   "license": "ISC",
   "homepage": "https://github.com/janis-commerce/client-settings.git#readme",
   "devDependencies": {
+    "@janiscommerce/api-test": "^2.3.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.3",
     "husky": "^2.4.1",
     "lodash.clonedeep": "^4.5.0",
     "mocha": "^5.2.0",
+    "mock-require": "^3.0.3",
     "nyc": "^13.1.0",
     "sinon": "^9.0.2"
   },
@@ -34,7 +36,10 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/api": "^4.2.4",
-    "@janiscommerce/model": "^3.7.0"
+    "@janiscommerce/api": "^4.3.0",
+    "@janiscommerce/model": "^4.1.0",
+    "@janiscommerce/superstruct": "^1.1.1",
+    "assert": "^2.0.0",
+    "path": "^0.12.7"
   }
 }

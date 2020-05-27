@@ -60,7 +60,7 @@ A function that returns the hooks to use with [sls-helper](https://www.npmjs.com
 
 It receives an object as argument with the following optional properties:
 
-- `includes` To add som custom include in the `UpdateSettingsApi`
+- `includes` To add some custom include in the `UpdateSettingsApi`
 
 ## OpenAPI Specification
 
@@ -105,6 +105,8 @@ module.exports = {
 For example:
 
 ```js
+const { struct } = require('@janiscommerce/superstruct');
+
 module.exports = {
 	product: {
 		defaultStatus: {
