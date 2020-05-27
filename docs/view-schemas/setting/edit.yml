@@ -1,0 +1,78 @@
+service: my-service # Replace
+name: setting-edit
+root: Edit
+source:
+  service: my-service # Replace
+  namespace: setting
+  method: get
+target:
+  service: my-service # Replace
+  namespace: setting
+  method: update
+sections:
+  - name: ProductSettings
+    rootComponent: FormSection
+    source:
+      service: my-service # Replace
+      namespace: setting
+      method: get
+    sourceEnpointParameters:
+      - id: entity
+        target: path
+        value:
+          static: product
+    target:
+      service: my-service # Replace
+      namespace: setting
+      method: update
+    targetEnpointParameters:
+      - id: entity
+        target: path
+        value:
+          static: product
+    fieldsGroup:
+      - name: detail
+        icon: catalogue
+        fields:
+          - name: defaultStatus
+            component: Select
+            componentAttributes:
+              canClear: false
+              labelPrefix: common.status.
+              translateLabels: true
+              options:
+                scope: local
+                values:
+                  - label: active
+                    value: active
+                  - label: inactive
+                    value: inactive
+
+  - name: SkuSettings
+    rootComponent: FormSection
+    source:
+      service: my-service # Replace
+      namespace: setting
+      method: get
+    sourceEnpointParameters:
+      - id: entity
+        target: path
+        value:
+          static: sku
+    target:
+      service: my-service # Replace
+      namespace: setting
+      method: update
+    targetEnpointParameters:
+      - id: entity
+        target: path
+        value:
+          static: sku
+    fieldsGroup:
+      - name: detail
+        icon: catalogue
+        fields:
+          - name: defaultUnitMultiplier
+            component: Input
+            componentAttributes:
+              type: number

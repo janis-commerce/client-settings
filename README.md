@@ -11,6 +11,130 @@ A package to handle client settings
 npm install @janiscommerce/client-settings
 ```
 
+## Usage
+
+### Settings definition
+
+Settings must be previously defined in a "definition file". The default definition file location is `project-path/schemas/settings/index.js`.
+If you want to get it from somewhere else, you can call `ClientSettings.setSettingsDefinitionPath()` (remember to use an absolut path).
+
+The definition file is just a JS file that exports the following structure (with as many settings as needed):
+
+```js
+module.exports = {
+	[entity]: {
+		[settingName]: {
+			description: 'A description of what this setting does',
+			struct: 'The validation to use with @janiscommerce/superstruct package',
+			default: settingDefaultValue // Of any type
+		}
+	}
+}
+```
+
+For example:
+
+```js
+const { struct } = require('@janiscommerce/superstruct');
+
+module.exports = {
+	product: {
+		defaultStatus: {
+			description: 'The status to be set to a product if any status is provided',
+			struct: struct.enum(['active', 'inactive']),
+			default: 'active'
+		},
+	},
+	sku: {
+		defaultUnitMultiplier: {
+			description: 'The unit multiplier to be set to an SKU if any multiplier is provided',
+			struct: 'number & positive',
+			default: 1
+		}
+	}
+}
+```
+
+### Settings fetch
+
+To fetch the clients settings, you must use the `ClientSettings` class. You **must** always set a [session](https://npmjs.org/package/@janiscommerce/api-session) before fetching any setting.
+
+```js
+const { ClientSettings } = require('@janiscommerce/client-settings');
+
+// mySession must be an instance of @janiscommerce/api-session
+ClientSettings.setSession(mySession);
+
+const productDefaultStatus = ClientSettings.get('product', 'defaultStatus');
+
+console.log(productDefaultStatus); // For example, 'active'
+```
+
+### Settings management
+
+To allow the user to change the client settings values, you have to implement a few things:
+
+- The Mongodb indexes
+
+```js
+// schemas/mongo/clients.js
+const { ClientIndexes } = require('@janiscommerce/client-settings');
+
+module.exports = {
+
+	// Your other indexes
+
+	...ClientIndexes
+};
+```
+
+- The Serverless helpers hooks
+
+```js
+// serverless.js
+const { helper } = require('sls-helper');
+
+const { ServerlessHelperHooks } = require('@janiscommerce/client-settings');
+
+module.exports = helper({
+	hooks: [
+		// other hooks
+
+		...ServerlessHelperHooks()
+	]
+});
+```
+
+- A GET API to fetch the current configuration.
+
+```js
+// src/api/setting/get.js
+const { GetSettingApi } = require('@janiscommerce/client-settings');
+
+module.exports = GetSettingApi;
+```
+
+- A PUT API to update the current configuration.
+
+```js
+// src/api/setting/put.js
+const { PuSettingApi } = require('@janiscommerce/client-settings');
+
+module.exports = PuSettingApi;
+```
+
+- The schemas for every API:
+
+The Base Schema: [`base.yml`](docs/schemas/setting/base.yml)
+
+The GET Schema: [`get.yml`](docs/schemas/setting/get.yml)
+
+The PUT Schema: [`put.yml`](docs/schemas/setting/put.yml)
+
+- An Edit view schema:
+
+Here's an example that you must customize with your own settings: [`edit.yml`](docs/view-schemas/setting/edit.yml)
+
 ## API
 
 This package exports the following modules:
@@ -69,58 +193,3 @@ There is a demo of the OpenAPI specification for the `GetSettingsApi` and`Update
 - Replace `{YOUR-SERVICE}` in the `x-janis-permissions` in both schemas
 - Add this permission to you services permissions declarations
 - Add the `Settings` tag to you OpenAPI base file
-
-## Usage
-
-To fetch the clients settings, you must use the `ClientSettings` class. You **must** always set a [session](https://npmjs.org/package/@janiscommerce/api-session) before fetching any setting.
-
-```js
-const { ClientSettings } = require('@janiscommerce/client-settings');
-
-// mySession must be an instance of @janiscommerce/api-session
-ClientSettings.setSession(mySession);
-
-const productDefaultStatus = ClientSettings.get('product', 'defaultStatus');
-
-console.log(productDefaultStatus); // For example, 'active'
-```
-
-Settings must be previously defined in a "definition file". The default definition file location is `project-path/schemas/settings/index.js`.
-If you want to get it from somewhere else, you can call `ClientSettings.setSettingsDefinitionPath()` (remember to use an absolut path).
-
-The definition file is just a JS file that exports the following structure (with as many settings as needed):
-
-```js
-module.exports = {
-	[entity]: {
-		[settingName]: {
-			description: 'A description of what this setting does',
-			struct: 'The validation to use with @janiscommerce/superstruct package',
-			default: settingDefaultValue // Of any type
-		}
-	}
-}
-```
-
-For example:
-
-```js
-const { struct } = require('@janiscommerce/superstruct');
-
-module.exports = {
-	product: {
-		defaultStatus: {
-			description: 'The status to be set to a product if any status is provided',
-			struct: struct.enum(['active', 'inactive']),
-			default: 'active'
-		},
-	},
-	sku: {
-		defaultUnitMultiplier: {
-			description: 'The unit multiplier to be set to an SKU if any multiplier is provided',
-			struct: 'number & positive',
-			default: 1
-		}
-	}
-}
-```
