@@ -1,6 +1,6 @@
 {
   "name": "@janiscommerce/client-settings",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A package to handle client settings",
   "main": "lib/index.js",
   "scripts": {
