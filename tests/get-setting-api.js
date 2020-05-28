@@ -75,7 +75,7 @@ describe('Setting Api Get Tests', () => {
 			before: sandbox => {
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				sandbox.stub(ClientSettingsModel.prototype, 'getBy');
-				ClientSettingsModel.prototype.getBy.resolves({});
+				ClientSettingsModel.prototype.getBy.resolves(null);
 			},
 			request: { pathParameters: ['sample-entity'] },
 			session: true,
