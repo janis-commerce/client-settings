@@ -241,11 +241,10 @@ describe('ClientSettings', () => {
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
 		sinon.stub(ClientSettingsModel.prototype, 'getBy');
-		ClientSettingsModel.prototype.getBy.onCall(0).resolves({
+		ClientSettingsModel.prototype.getBy.resolves({
 			entity,
 			values: { [settingName]: value }
 		});
-		ClientSettingsModel.prototype.getBy.onCall(1).resolves(null);
 
 		ClientSettings
 			.setSettingsDefinitionPath(uniqueDefinitionPath)
@@ -267,9 +266,8 @@ describe('ClientSettings', () => {
 
 		assert.deepStrictEqual(otherSettingValue, 0);
 
-		sinon.assert.calledTwice(ClientSettingsModel.prototype.getBy);
-		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.getBy.getCall(0), 'entity', entity, {	unique: true });
-		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.getBy.getCall(1), 'entity', entity, {	unique: true });
+		sinon.assert.calledOnce(ClientSettingsModel.prototype.getBy);
+		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.getBy, 'entity', entity, {	unique: true });
 	});
 
 });
