@@ -129,8 +129,8 @@ describe('ClientSettings', () => {
 
 		const fetchError = new Error('Failed to fetch');
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.rejects(fetchError);
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.rejects(fetchError);
 
 		await assert.rejects(() => {
 			return ClientSettings
@@ -146,11 +146,10 @@ describe('ClientSettings', () => {
 
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.resolves({
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.resolves({
 			entity,
-			name: settingName,
-			value
+			values: { [settingName]: value }
 		});
 
 		const settingValue = await ClientSettings
@@ -160,14 +159,7 @@ describe('ClientSettings', () => {
 
 		assert.deepStrictEqual(settingValue, value);
 
-		sinon.assert.calledOnceWithExactly(ClientSettingsModel.prototype.get, {
-			filters: {
-				entity,
-				name: settingName
-			},
-			limit: 1,
-			unique: true
-		});
+		sinon.assert.calledOnceWithExactly(ClientSettingsModel.prototype.getBy, 'entity', entity, {	unique: true });
 	});
 
 	it('Should resolve the setting value from DB if it\'s found and then from cache on consecutive calls', async () => {
@@ -176,11 +168,10 @@ describe('ClientSettings', () => {
 
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.resolves({
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.resolves({
 			entity,
-			name: settingName,
-			value
+			values: { [settingName]: value }
 		});
 
 		const settingValue = await ClientSettings
@@ -197,7 +188,7 @@ describe('ClientSettings', () => {
 
 		assert.deepStrictEqual(secondSettingValue, value);
 
-		sinon.assert.calledOnce(ClientSettingsModel.prototype.get);
+		sinon.assert.calledOnce(ClientSettingsModel.prototype.getBy);
 	});
 
 	it('Should resolve the setting value from default value if it\'s not found', async () => {
@@ -206,8 +197,8 @@ describe('ClientSettings', () => {
 
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.resolves(null);
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.resolves(null);
 
 		const settingValue = await ClientSettings
 			.setSettingsDefinitionPath(uniqueDefinitionPath)
@@ -223,8 +214,8 @@ describe('ClientSettings', () => {
 
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.resolves(null);
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.resolves(null);
 
 		const settingValue = await ClientSettings
 			.setSettingsDefinitionPath(uniqueDefinitionPath)
@@ -240,7 +231,7 @@ describe('ClientSettings', () => {
 
 		assert.deepStrictEqual(secondSettingValue, 'sample-default-value');
 
-		sinon.assert.calledOnce(ClientSettingsModel.prototype.get);
+		sinon.assert.calledOnce(ClientSettingsModel.prototype.getBy);
 	});
 
 	it('Should try to fetch the setting value from DB if it\'s found, once for each setting', async () => {
@@ -249,13 +240,11 @@ describe('ClientSettings', () => {
 
 		mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-		sinon.stub(ClientSettingsModel.prototype, 'get');
-		ClientSettingsModel.prototype.get.onCall(0).resolves({
+		sinon.stub(ClientSettingsModel.prototype, 'getBy');
+		ClientSettingsModel.prototype.getBy.resolves({
 			entity,
-			name: settingName,
-			value
+			values: { [settingName]: value }
 		});
-		ClientSettingsModel.prototype.get.onCall(1).resolves(null);
 
 		ClientSettings
 			.setSettingsDefinitionPath(uniqueDefinitionPath)
@@ -277,23 +266,8 @@ describe('ClientSettings', () => {
 
 		assert.deepStrictEqual(otherSettingValue, 0);
 
-		sinon.assert.calledTwice(ClientSettingsModel.prototype.get);
-		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.get.getCall(0), {
-			filters: {
-				entity,
-				name: settingName
-			},
-			limit: 1,
-			unique: true
-		});
-		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.get.getCall(1), {
-			filters: {
-				entity,
-				name: 'other-sample-setting'
-			},
-			limit: 1,
-			unique: true
-		});
+		sinon.assert.calledOnce(ClientSettingsModel.prototype.getBy);
+		sinon.assert.calledWithExactly(ClientSettingsModel.prototype.getBy, 'entity', entity, {	unique: true });
 	});
 
 });
