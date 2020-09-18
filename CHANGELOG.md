@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0] - 2020-09-18
+### Changed
+- Updated `@janiscommerce/api` to `6.x.x`
+- Updated `@janiscommerce/model` to `5.x.x`
+
 ## [1.0.2] - 2020-06-12
 ### Fixed
 - Fix DB get by entity
