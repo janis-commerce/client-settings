@@ -1,14 +1,6 @@
 service: my-service # Replace
 name: setting-edit
 root: Edit
-source:
-  service: my-service # Replace
-  namespace: setting
-  method: get
-target:
-  service: my-service # Replace
-  namespace: setting
-  method: update
 sections:
   - name: ProductSettings
     rootComponent: FormSection
@@ -16,8 +8,8 @@ sections:
       service: my-service # Replace
       namespace: setting
       method: get
-    sourceEnpointParameters:
-      - id: entity
+    sourceEndpointParameters:
+      - name: entity
         target: path
         value:
           static: product
@@ -25,8 +17,8 @@ sections:
       service: my-service # Replace
       namespace: setting
       method: update
-    targetEnpointParameters:
-      - id: entity
+    targetEndpointParameters:
+      - name: entity
         target: path
         value:
           static: product
@@ -54,8 +46,8 @@ sections:
       service: my-service # Replace
       namespace: setting
       method: get
-    sourceEnpointParameters:
-      - id: entity
+    sourceEndpointParameters:
+      - name: entity
         target: path
         value:
           static: sku
@@ -63,8 +55,8 @@ sections:
       service: my-service # Replace
       namespace: setting
       method: update
-    targetEnpointParameters:
-      - id: entity
+    targetEndpointParameters:
+      - name: entity
         target: path
         value:
           static: sku
