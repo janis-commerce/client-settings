@@ -3,7 +3,7 @@
 const mockRequire = require('mock-require');
 const APITest = require('@janiscommerce/api-test');
 
-const GetSettingApi = require('../lib/get-setting-api');
+const { GetSettingApi } = require('../lib/index');
 const DefinitionFetcher = require('../lib/definition-fetcher');
 
 describe('Setting Api Get Tests', () => {
