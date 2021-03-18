@@ -6,7 +6,7 @@
 
 A package to handle client settings. This package allows you to declare all the settings available for each entity of your service.
 
-It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), and uses Client data from [client-creator](https://www.npmjs.com/package/@janiscommerce/client-creator), etc.
+It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), also uses Client data from [client-creator](https://www.npmjs.com/package/@janiscommerce/client-creator), etc.
 
 ## Installation
 ```sh

@@ -32,13 +32,13 @@ describe('Setting Api Get Tests', () => {
 
 	context('When Entity has invalid configuration', () => APITest(GetSettingApi, '/api/setting/wrongEntity', [
 		{
-			description: 'Should reject if the definition file its not found',
+			description: 'Should reject if the definition file it is not found',
 			request: { pathParameters: ['wrongEntity'] },
 			session: true,
 			response: { code: 400 }
 		},
 		{
-			description: 'Should reject if the entity not found in the definition file',
+			description: 'Should reject if the entity is not found in the definition file',
 			before: () => mockRequire(defaultDefinitionPath, settingsDefinition),
 			request: { pathParameters: ['wrongEntity'] },
 			session: true,

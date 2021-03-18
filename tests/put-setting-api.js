@@ -38,7 +38,7 @@ describe('Setting Api Put Tests', () => {
 
 	context('When Entity has invalid configuration', () => APITest(PutSettingApi, '/api/setting/wrongEntity', [
 		{
-			description: 'Should rejects if the definition file its not found',
+			description: 'Should rejects if the definition file it is not found',
 			request: {
 				data: { ...settingsDefinitionRequestData },
 				pathParameters: ['wrongEntity']
