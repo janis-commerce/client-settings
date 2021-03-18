@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Added Client-Settings method to set custom Cache TTL Tiem
+- Added Client-Settings method to set custom Cache TTL Time
 
 ### Changed
-- Client-Settings APIs and Client-Settings class uses Service Client's Model
-- Cache with TTL in Client-Settings class
+- Now Client-Settings APIs and Client-Settings class uses Service Client's Model
+- Now Cache has TTL for getting settings in Client-Settings class
 
 ### Removed
 - Client-Settings model and indexes
