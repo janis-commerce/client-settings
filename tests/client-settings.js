@@ -185,6 +185,7 @@ describe('ClientSettings', () => {
 
 			ClientSettings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setCacheTime(60)
 				.setSession(getSession({
 					[entity]: {
 						[settingName]: value,
