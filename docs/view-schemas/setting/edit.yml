@@ -1,7 +1,18 @@
 service: my-service # Replace
 name: setting-edit
 root: Edit
+saveRedirectUrl: '/{{my-service}}/setting/edit' # Replace {{my-service}}, If you don't have a Browse
+cancelRedirectUrl: '/{my-service}}/setting/edit' # Replace {{my-service}}, If you don't have a Browse
+source: # If you have a MainFormSection and need to charge initial data
+  service: my-service # Replace
+  namespace: setting
+  method: get
+target: # If you have a MainFormSection and need to save new data
+  service: my-service # Replace
+  namespace: setting
+  method: update
 sections:
+  # Another Sections you have (if you have)
   - name: ProductSettings
     rootComponent: FormSection
     source:
