@@ -6,7 +6,7 @@
 
 A package to handle client settings. This package allows you to declare all the settings available for each entity of your service.
 
-It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), unique indexes definitions for [Mongodb Index Creator](https://www.npmjs.com/package/@janiscommerce/mongodb-index-creator), etc.
+It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), also uses Client data from [client-creator](https://www.npmjs.com/package/@janiscommerce/client-creator), etc.
 
 ## Installation
 ```sh
@@ -75,20 +75,6 @@ console.log(productDefaultStatus); // For example, 'active'
 ### Settings management
 
 To allow the user to change the client settings values, you have to implement a few things:
-
-- The Mongodb indexes
-
-```js
-// schemas/mongo/clients.js
-const { ClientIndexes } = require('@janiscommerce/client-settings');
-
-module.exports = {
-
-	// Your other indexes
-
-	...ClientIndexes
-};
-```
 
 - The Serverless helpers hooks
 
@@ -168,6 +154,12 @@ Chainable. Returns the `this` object.
 
 Chainable. Returns the `this` object.
 
+#### **setCacheTime(timeInSeconds)**
+
+- `timeInSeconds` <Number> The seconds that the settings will keep in cache. By default One Hour Cache
+
+Chainable. Returns the `this` object.
+
 #### **async get(entity, settingName)**
 
 - `entity` <String> The name of the entity that owns the setting
@@ -180,5 +172,5 @@ Rejects a `ClientSettingsError` if one of the following errors occur:
 - The setting is not present in the definition file
 - DB connection fails when fetching the value
 
-If a setting value is not present in the `settings` DB table/collection, it will return the default value, defined in the definition file.
-Alsoo, the class automatically caches the values of each setting once they are required.
+If a setting value is not present in the `client.setting` document, it will return the default value, defined in the definition file.
+Also, the class automatically caches the values of each setting once they are required.

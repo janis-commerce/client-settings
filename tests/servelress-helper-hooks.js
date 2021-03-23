@@ -3,7 +3,7 @@
 const assert = require('assert');
 const cloneDeep = require('lodash.clonedeep');
 
-const ServerlessHelperHooks = require('../lib/serverless-helper-hooks');
+const { ServerlessHelperHooks } = require('../lib/index');
 
 describe('Servelress Helper Hooks', () => {
 

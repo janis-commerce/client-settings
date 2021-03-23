@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added Client-Settings method to set custom Cache TTL Time
+
+### Changed
+- Now Client-Settings APIs and Client-Settings class uses Service Client's Model
+- Now Cache has TTL for getting settings in Client-Settings class
+
+### Removed
+- Client-Settings model and indexes
 
 ## [2.0.0] - 2020-09-18
 ### Changed
