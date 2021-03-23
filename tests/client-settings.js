@@ -20,7 +20,7 @@ describe('ClientSettings', () => {
 
 	const defaultDefinitionPath = DefinitionFetcher.getPath();
 
-	const getSession = (settings = {}) => new ApiSession(undefined, { clientCode: 'sample-client', settings });
+	const getSession = settings => new ApiSession(undefined, { clientCode: 'sample-client', ...settings && { settings } });
 
 	const settingsDefinition = {
 		'sample-entity': {

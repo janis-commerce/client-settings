@@ -156,7 +156,7 @@ Chainable. Returns the `this` object.
 
 #### **setCacheTime(timeInSeconds)**
 
-- `timeInSeconds` <Number> The seconds that the settings will keep in cache
+- `timeInSeconds` <Number> The seconds that the settings will keep in cache. By default One Hour Cache
 
 Chainable. Returns the `this` object.
 
