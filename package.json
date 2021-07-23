@@ -8,7 +8,8 @@
     "test-ci": "nyc --reporter=lcov --reporter=text-summary mocha --exit --recursive tests/",
     "watch-test": "export TEST_ENV=true; mocha --exit -R nyan -w --recursive tests/",
     "coverage": "nyc npm test",
-    "lint": "eslint lib/ tests/"
+    "lint": "eslint lib/ tests/",
+    "build-types": "tsc lib/index.js --declaration --allowJs --emitDeclarationOnly --outDir types"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@janiscommerce/api-session": "^3.1.1",
     "@janiscommerce/api-test": "^4.0.0",
+    "@types/node": "^16.4.1",
     "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.22.1",
@@ -28,11 +30,14 @@
     "mocha": "^8.3.2",
     "mock-require": "^3.0.3",
     "nyc": "^15.1.0",
-    "sinon": "^9.2.4"
+    "sinon": "^9.2.4",
+    "typescript": "^4.3.5"
   },
   "files": [
-    "lib/"
+    "lib/",
+    "types/"
   ],
+  "types": "types/index.d.ts",
   "directories": {
     "test": "tests"
   },
