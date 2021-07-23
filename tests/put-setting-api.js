@@ -101,13 +101,13 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
-			description: 'Should not save if non-value has change from default value',
+			description: 'Should save an empty object if every value is the default value',
 			before: sandbox => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update');
+				sandbox.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
 				data: {
@@ -119,7 +119,9 @@ describe('Setting Api Put Tests', () => {
 			session: true,
 			response: { code: 200 },
 			after: (response, sandbox) => {
-				sandbox.assert.notCalled(ClientModel.prototype.update);
+				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': {}
+				}, { code: 'defaultClient' });
 			}
 		},
 		{
