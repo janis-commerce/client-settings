@@ -81,12 +81,12 @@ describe('Setting Api Put Tests', () => {
 		},
 		{
 			description: 'Should save the new setting',
-			before: sandbox => {
+			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update').resolves(1);
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
 				data: { ...settingsDefinitionRequestData },
@@ -94,20 +94,20 @@ describe('Setting Api Put Tests', () => {
 			},
 			session: true,
 			response: { code: 200 },
-			after: (response, sandbox) => {
-				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': { ...settingsDefinitionRequestData }
 				}, { code: 'defaultClient' });
 			}
 		},
 		{
 			description: 'Should save an empty object if every value is the default value',
-			before: sandbox => {
+			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update').resolves(1);
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
 				data: {
@@ -118,20 +118,20 @@ describe('Setting Api Put Tests', () => {
 			},
 			session: true,
 			response: { code: 200 },
-			after: (response, sandbox) => {
-				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': {}
 				}, { code: 'defaultClient' });
 			}
 		},
 		{
 			description: 'Should save only the setting has change from default value',
-			before: sandbox => {
+			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update').resolves(1);
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
 				data: {
@@ -142,20 +142,20 @@ describe('Setting Api Put Tests', () => {
 			},
 			session: true,
 			response: { code: 200 },
-			after: (response, sandbox) => {
-				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': { 'sample-setting': 'not-default' }
 				}, { code: 'defaultClient' });
 			}
 		},
 		{
 			description: 'Should save only the setting is in definition file',
-			before: sandbox => {
+			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update').resolves(1);
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
 				data: {
@@ -166,20 +166,20 @@ describe('Setting Api Put Tests', () => {
 			},
 			session: true,
 			response: { code: 200 },
-			after: (response, sandbox) => {
-				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': { 'sample-setting': 'not-default' }
 				}, { code: 'defaultClient' });
 			}
 		},
 		{
 			description: 'Should rejects if database fails updating client',
-			before: sandbox => {
+			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
 				mockRequire(clientPath, ClientModel);
 
-				sandbox.stub(ClientModel.prototype, 'update').rejects();
+				sinon.stub(ClientModel.prototype, 'update').rejects();
 			},
 			request: {
 				data: { ...settingsDefinitionRequestData },
@@ -187,8 +187,8 @@ describe('Setting Api Put Tests', () => {
 			},
 			session: true,
 			response: { code: 500 },
-			after: (response, sandbox) => {
-				sandbox.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': { ...settingsDefinitionRequestData }
 				}, { code: 'defaultClient' });
 			}
