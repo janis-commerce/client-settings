@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.1] - 2021-07-23
+- Fixed update API when all values are set to the default value
+- Added TS typings
+
 ## [3.0.0] - 2021-03-25
 ### Added
 - Added Client-Settings method to set custom Cache TTL Time
