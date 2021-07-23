@@ -42,7 +42,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/api": "^6.2.1",
+    "@janiscommerce/api": "^6.3.0",
     "@janiscommerce/superstruct": "^1.2.0",
     "assert": "^2.0.0",
     "node-cache": "^5.1.2",
