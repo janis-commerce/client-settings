@@ -20,7 +20,7 @@
   "license": "ISC",
   "homepage": "https://github.com/janis-commerce/client-settings.git#readme",
   "devDependencies": {
-    "@janiscommerce/api-session": "^3.1.1",
+    "@janiscommerce/api-session": "^3.2.0",
     "@janiscommerce/api-test": "^4.0.0",
     "@types/node": "^16.11.7",
     "eslint": "^8.2.0",
