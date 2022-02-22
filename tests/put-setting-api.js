@@ -53,8 +53,8 @@ describe('Setting Api Put Tests', () => {
 			'object-sample-setting': {
 				description: 'Some setting description',
 				struct: 'object?',
-				default: { 
-					exampleProperty: 'exampleValue' 
+				default: {
+					exampleProperty: 'exampleValue'
 				},
 				saveEmptyValue: false
 			},
@@ -174,7 +174,7 @@ describe('Setting Api Put Tests', () => {
 				sinon.stub(ClientModel.prototype, 'update').resolves(1);
 			},
 			request: {
-				data: { 
+				data: {
 					'sample-setting': '',
 					'other-sample-setting': 15
 				},
