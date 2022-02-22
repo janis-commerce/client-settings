@@ -237,7 +237,6 @@ describe('Setting Api Put Tests', () => {
 		{
 			description:
 				'Should not save the settings when each setting are empty, and by default it is not allowed to save empty settings',
-			getResponse: console.log,
 			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinitionWithSaveEmptyValueAsFalse);
