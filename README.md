@@ -28,7 +28,8 @@ module.exports = {
 		[settingName]: {
 			description: 'A description of what this setting does',
 			struct: 'The validation to use with @janiscommerce/superstruct package',
-			default: settingDefaultValue // Of any type
+			default: settingDefaultValue, // Of any type
+			saveEmptyValue: false
 		}
 	}
 }
@@ -44,18 +45,24 @@ module.exports = {
 		defaultStatus: {
 			description: 'The status to be set to a product if any status is provided',
 			struct: struct.enum(['active', 'inactive']),
-			default: 'active'
+			default: 'active',
+			saveEmptyValue: false
 		},
 	},
 	sku: {
 		defaultUnitMultiplier: {
 			description: 'The unit multiplier to be set to an SKU if any multiplier is provided',
 			struct: 'number & positive',
-			default: 1
+			default: 1,
+			saveEmptyValue: true
 		}
 	}
 }
 ```
+
+Important:
+
+If the setting property `saveEmptyValue` is set to `false`, any of the following values `null - '' - 0 - {} - []` will not be saved.
 
 ### Settings fetch
 
