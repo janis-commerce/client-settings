@@ -232,7 +232,7 @@ describe('Setting Api Put Tests', () => {
 			response: { code: 200 },
 			after: (response, sinon) => {
 				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
-						'settings.sample-entity': {}
+					'settings.sample-entity': {}
 				}, { code: 'defaultClient' });
 			}
 		},
