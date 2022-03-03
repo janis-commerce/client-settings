@@ -60,9 +60,9 @@ module.exports = {
 }
 ```
 
-Important:
+### Important!
 
-If the setting property `saveEmptyValue` is set to `false`, any of the following values `null - '' - 0 - {} - []` will not be saved.
+If the setting property `saveEmptyValue` is set to `false`, any of the following values `null - '' - 0 - {} - []` will not be saved. In any other case, the `saveEmptyValue` property is set to `true`.
 
 ### Settings fetch
 

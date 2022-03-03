@@ -213,7 +213,7 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
-			description: 'Should not save the settings when each setting value is the default value',
+			description: 'Should save an empty object when each setting value is the default value',
 			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinition);
@@ -231,12 +231,14 @@ describe('Setting Api Put Tests', () => {
 			session: true,
 			response: { code: 200 },
 			after: (response, sinon) => {
-				sinon.assert.notCalled(ClientModel.prototype.update);
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+						'settings.sample-entity': {}
+				}, { code: 'defaultClient' });
 			}
 		},
 		{
 			description:
-				'Should not save the settings when each setting are empty, and by default it is not allowed to save empty settings',
+				'Should save an empty object when each setting are empty, and by default it is not allowed to save empty settings',
 			before: sinon => {
 
 				mockRequire(defaultDefinitionPath, settingsDefinitionWithSaveEmptyValueAsFalse);
@@ -251,7 +253,9 @@ describe('Setting Api Put Tests', () => {
 			session: true,
 			response: { code: 200 },
 			after: (response, sinon) => {
-				sinon.assert.notCalled(ClientModel.prototype.update);
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': {}
+			}, { code: 'defaultClient' });
 			}
 		},
 		{
