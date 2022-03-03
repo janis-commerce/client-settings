@@ -255,7 +255,7 @@ describe('Setting Api Put Tests', () => {
 			after: (response, sinon) => {
 				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': {}
-			}, { code: 'defaultClient' });
+				}, { code: 'defaultClient' });
 			}
 		},
 		{
