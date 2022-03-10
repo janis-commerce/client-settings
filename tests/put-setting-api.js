@@ -20,18 +20,58 @@ describe('Setting Api Put Tests', () => {
 			'sample-setting': {
 				description: 'Some setting description',
 				struct: 'string?',
-				default: 'sample-default-value'
+				default: 'sample-default-value',
+				saveEmptyValue: false
 			},
 			'other-sample-setting': {
 				description: 'Some setting description',
 				struct: 'number?',
-				default: 0
+				default: 0,
+				saveEmptyValue: true
 			}
 		}
 	};
 
 	const settingsDefinitionRequestData = {
 		'sample-setting': 'new-setting-value'
+	};
+
+	const settingsDefinitionWithSaveEmptyValueAsFalse = {
+		'sample-entity': {
+			'string-sample-setting': {
+				description: 'Some setting description',
+				struct: 'string?',
+				default: 'sample-default-value',
+				saveEmptyValue: false
+			},
+			'number-sample-setting': {
+				description: 'Some setting description',
+				struct: 'number?',
+				default: 1,
+				saveEmptyValue: false
+			},
+			'object-sample-setting': {
+				description: 'Some setting description',
+				struct: 'object?',
+				default: {
+					exampleProperty: 'exampleValue'
+				},
+				saveEmptyValue: false
+			},
+			'array-sample-setting': {
+				description: 'Some setting description',
+				struct: 'array?',
+				default: ['exampleItem'],
+				saveEmptyValue: false
+			}
+		}
+	};
+
+	const emptySettingsDefinitionRequestData = {
+		'string-sample-setting': '',
+		'number-sample-setting': 0,
+		'object-sample-setting': {},
+		'array-sample-setting': []
 	};
 
 	const defaultDefinitionPath = DefinitionFetcher.getPath();
@@ -101,30 +141,6 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
-			description: 'Should save an empty object if every value is the default value',
-			before: sinon => {
-
-				mockRequire(defaultDefinitionPath, settingsDefinition);
-				mockRequire(clientPath, ClientModel);
-
-				sinon.stub(ClientModel.prototype, 'update').resolves(1);
-			},
-			request: {
-				data: {
-					'sample-setting': settingsDefinition['sample-entity']['sample-setting'].default,
-					'other-sample-setting': settingsDefinition['sample-entity']['other-sample-setting'].default
-				},
-				pathParameters: ['sample-entity']
-			},
-			session: true,
-			response: { code: 200 },
-			after: (response, sinon) => {
-				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
-					'settings.sample-entity': {}
-				}, { code: 'defaultClient' });
-			}
-		},
-		{
 			description: 'Should save only the setting has change from default value',
 			before: sinon => {
 
@@ -149,6 +165,30 @@ describe('Setting Api Put Tests', () => {
 			}
 		},
 		{
+			description: 'Should save only an one setting, because the second is an empty setting',
+			before: sinon => {
+
+				mockRequire(defaultDefinitionPath, settingsDefinition);
+				mockRequire(clientPath, ClientModel);
+
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
+			},
+			request: {
+				data: {
+					'sample-setting': '',
+					'other-sample-setting': 15
+				},
+				pathParameters: ['sample-entity']
+			},
+			session: true,
+			response: { code: 200 },
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': { 'other-sample-setting': 15 }
+				}, { code: 'defaultClient' });
+			}
+		},
+		{
 			description: 'Should save only the setting is in definition file',
 			before: sinon => {
 
@@ -169,6 +209,52 @@ describe('Setting Api Put Tests', () => {
 			after: (response, sinon) => {
 				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
 					'settings.sample-entity': { 'sample-setting': 'not-default' }
+				}, { code: 'defaultClient' });
+			}
+		},
+		{
+			description: 'Should save an empty object when each setting value is the default value',
+			before: sinon => {
+
+				mockRequire(defaultDefinitionPath, settingsDefinition);
+				mockRequire(clientPath, ClientModel);
+
+				sinon.stub(ClientModel.prototype, 'update');
+			},
+			request: {
+				data: {
+					'sample-setting': settingsDefinition['sample-entity']['sample-setting'].default,
+					'other-sample-setting': settingsDefinition['sample-entity']['other-sample-setting'].default
+				},
+				pathParameters: ['sample-entity']
+			},
+			session: true,
+			response: { code: 200 },
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': {}
+				}, { code: 'defaultClient' });
+			}
+		},
+		{
+			description:
+				'Should save an empty object when each setting are empty, and by default it is not allowed to save empty settings',
+			before: sinon => {
+
+				mockRequire(defaultDefinitionPath, settingsDefinitionWithSaveEmptyValueAsFalse);
+				mockRequire(clientPath, ClientModel);
+
+				sinon.stub(ClientModel.prototype, 'update');
+			},
+			request: {
+				data: emptySettingsDefinitionRequestData,
+				pathParameters: ['sample-entity']
+			},
+			session: true,
+			response: { code: 200 },
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': {}
 				}, { code: 'defaultClient' });
 			}
 		},
