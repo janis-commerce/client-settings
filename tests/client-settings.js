@@ -20,7 +20,7 @@ describe('ClientSettings', () => {
 
 	const defaultDefinitionPath = DefinitionFetcher.getPath();
 
-	const getSession = settings => new ApiSession(undefined, { clientCode: 'sample-client', ...settings && { settings } });
+	const getSession = (settings, clientCode = 'sample-client') => new ApiSession({ clientCode }, { clientCode, ...settings && { settings } });
 
 	const settingsDefinition = {
 		'sample-entity': {
@@ -136,7 +136,7 @@ describe('ClientSettings', () => {
 			assert.deepStrictEqual(settingValue, value);
 		});
 
-		it('Should resolve the setting value if Client hast it and then use it from cache on consecutive calls', async () => {
+		it('Should resolve the setting value if Client has it and then use it from cache on consecutive calls', async () => {
 
 			sinon.spy(ClientSettings, 'getForClient');
 
@@ -159,6 +159,52 @@ describe('ClientSettings', () => {
 			assert.deepStrictEqual(secondSettingValue, value);
 
 			sinon.assert.calledOnce(ClientSettings.getForClient);
+		});
+
+		it('Should resolve the setting value if Client has it and then use it from cache on consecutive calls (with multiple clients)', async () => {
+
+			sinon.spy(ClientSettings, 'getForClient');
+
+			const uniqueDefinitionPath = getUniqueDefinitionPath();
+
+			mockRequire(uniqueDefinitionPath, settingsDefinition);
+
+			const settingValue = await ClientSettings
+				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setSession(getSession({ [entity]: { [settingName]: value } }))
+				.get(entity, settingName);
+
+			assert.deepStrictEqual(settingValue, value);
+
+			const secondSettingValue = await ClientSettings
+				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setSession(getSession())
+				.get(entity, settingName);
+
+			assert.deepStrictEqual(secondSettingValue, value);
+
+			const secondClientSettingValue = await ClientSettings
+				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setSession(getSession({ [entity]: { [settingName]: 'another' } }, 'other-client'))
+				.get(entity, settingName);
+
+			assert.deepStrictEqual(secondClientSettingValue, 'another');
+
+			const secondClientSecondSettingValue = await ClientSettings
+				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setSession(getSession(undefined, 'other-client'))
+				.get(entity, settingName);
+
+			assert.deepStrictEqual(secondClientSecondSettingValue, 'another');
+
+			const settingValueFromFirstClient = await ClientSettings
+				.setSettingsDefinitionPath(uniqueDefinitionPath)
+				.setSession(getSession())
+				.get(entity, settingName);
+
+			assert.deepStrictEqual(settingValueFromFirstClient, value);
+
+			sinon.assert.calledTwice(ClientSettings.getForClient);
 		});
 
 		it('Should resolve the setting value from default value if it\'s not found', async () => {
