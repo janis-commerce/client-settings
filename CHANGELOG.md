@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2023-04-18
+### Changed
+- Update [@janiscommerce/api](https://www.npmjs.com/package/@janiscommerce/api) to version 7.0.0
+
 ## [3.1.1] - 2022-03-11
 ### Fixed
 - Save settings in cache using `clientCode` as key to avoid conflicts with between different clients
