@@ -21,7 +21,7 @@
   "homepage": "https://github.com/janis-commerce/client-settings.git#readme",
   "devDependencies": {
     "@janiscommerce/api-session": "^3.4.0",
-    "@janiscommerce/api-test": "^5.0.0",
+    "@janiscommerce/api-test": "^6.0.0",
     "@types/node": "^16.18.23",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^13.2.0",
@@ -43,7 +43,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/api": "^7.0.0",
+    "@janiscommerce/api": "^8.0.0",
     "@janiscommerce/superstruct": "^1.2.1",
     "node-cache": "^5.1.2"
   }
