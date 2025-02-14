@@ -278,6 +278,58 @@ describe('Setting Api Put Tests', () => {
 					'settings.sample-entity': { ...settingsDefinitionRequestData }
 				}, { code: 'defaultClient' });
 			}
+		},
+		{
+			description: 'Should call postSaveHook with empty body because no setting was saved',
+			before: sinon => {
+
+				mockRequire(defaultDefinitionPath, settingsDefinitionWithSaveEmptyValueAsFalse);
+				mockRequire(clientPath, ClientModel);
+
+				sinon.stub(ClientModel.prototype, 'update');
+				sinon.stub(PutSettingApi.prototype, 'postSaveHook').resolves({});
+			},
+			request: {
+				data: emptySettingsDefinitionRequestData,
+				pathParameters: ['sample-entity']
+			},
+			session: true,
+			response: { code: 200 },
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': {}
+				}, { code: 'defaultClient' });
+				sinon.assert.calledOnceWithExactly(PutSettingApi.prototype.postSaveHook, {});
+			}
+		},
+		{
+			description: 'Should call postSaveHook with the saved setting',
+			before: sinon => {
+
+				mockRequire(defaultDefinitionPath, settingsDefinition);
+				mockRequire(clientPath, ClientModel);
+
+				sinon.stub(ClientModel.prototype, 'update').resolves(1);
+				sinon.stub(PutSettingApi.prototype, 'postSaveHook').resolves({ 'other-sample-setting': 15 });
+
+			},
+			request: {
+				data: {
+					'sample-setting': '',
+					'other-sample-setting': 15
+				},
+				pathParameters: ['sample-entity']
+			},
+			session: true,
+			response: { code: 200 },
+			after: (response, sinon) => {
+				sinon.assert.calledOnceWithExactly(ClientModel.prototype.update, {
+					'settings.sample-entity': { 'other-sample-setting': 15 }
+				}, { code: 'defaultClient' });
+				sinon.assert.calledOnceWithExactly(PutSettingApi.prototype.postSaveHook, { 'other-sample-setting': 15 });
+
+			}
 		}
 	]));
+
 });
