@@ -61,4 +61,20 @@ describe('Servelress Helper Hooks', () => {
 		assert.deepStrictEqual(ServerlessHelperHooks({ includes: ['foo', 'bar'] }), customConfig);
 	});
 
+	it('Return add custom functionRawProps to the basic configuration if they are passed', () => {
+
+		const customConfig = cloneDeep(defaultConfig);
+		customConfig[0][1].functionRawProps = { environment: 'foo' };
+		customConfig[0][1].functionRawProps = { environment: 'foo' };
+		customConfig[1][1].functionRawProps = { environment: 'foo' };
+		customConfig[1][1].functionRawProps = { environment: 'foo' };
+
+		assert.deepStrictEqual(ServerlessHelperHooks({
+			functionRawProps: {
+				getApi: { environment: 'foo' },
+				putApi: { environment: 'foo' }
+			}
+		}), customConfig);
+	});
+
 });
