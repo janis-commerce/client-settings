@@ -50,7 +50,9 @@ describe('ClientSettings', () => {
 
 		it('Should reject if session is not set', async () => {
 
-			await assert.rejects(() => ClientSettings.get(entity, settingName), {
+			const clientSettings = new ClientSettings();
+
+			await assert.rejects(() => clientSettings.get(entity, settingName), {
 				name: 'ClientSettingsError',
 				code: ClientSettingsError.codes.SESSION_NOT_SET
 			});
@@ -58,7 +60,10 @@ describe('ClientSettings', () => {
 
 		it('Should reject if setting definition is not found', async () => {
 
-			await assert.rejects(() => ClientSettings.setSession(getSession()).get(entity, settingName), {
+			const session = getSession();
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
+			await assert.rejects(() => clientSettings.get(entity, settingName), {
 				name: 'ClientSettingsError',
 				code: ClientSettingsError.codes.SETTING_DEFINITION_NOT_FOUND
 			});
@@ -66,9 +71,12 @@ describe('ClientSettings', () => {
 
 		it('Should reject if the default definition file is empty', async () => {
 
+			const session = getSession();
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
 			mockRequire(defaultDefinitionPath, undefined);
 
-			await assert.rejects(() => ClientSettings.setSession(getSession()).get(entity, settingName), {
+			await assert.rejects(() => clientSettings.get(entity, settingName), {
 				name: 'ClientSettingsError',
 				code: ClientSettingsError.codes.SETTING_DOES_NOT_EXIST
 			});
@@ -76,13 +84,15 @@ describe('ClientSettings', () => {
 
 		it('Should reject if requested setting entity does not exist', async () => {
 
+			const session = getSession();
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
 			await assert.rejects(() => {
-				return ClientSettings
+				return clientSettings
 					.setSettingsDefinitionPath(uniqueDefinitionPath)
-					.setSession(getSession())
 					.get('unknown-entity', settingName);
 			}, {
 				name: 'ClientSettingsError',
@@ -92,14 +102,16 @@ describe('ClientSettings', () => {
 
 		it('Should reject if requested setting name does not exist', async () => {
 
+			const session = getSession({ [entity]: { other: true } });
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
 			await assert.rejects(() => {
-				return ClientSettings
+				return clientSettings
 					.setSettingsDefinitionPath(uniqueDefinitionPath)
-					.setSession(getSession({ [entity]: { other: true } }))
 					.get(entity, 'unknown-setting-name');
 			}, {
 				name: 'ClientSettingsError',
@@ -112,11 +124,13 @@ describe('ClientSettings', () => {
 
 		it('Should use a custom definition path if it is set', async () => {
 
+			const session = getSession();
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
 			mockRequire('/custom/path', settingsDefinition);
 
-			const settingValue = await ClientSettings
+			const settingValue = await clientSettings
 				.setSettingsDefinitionPath('/custom/path')
-				.setSession(getSession())
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, 'sample-default-value');
@@ -124,13 +138,15 @@ describe('ClientSettings', () => {
 
 		it('Should resolve the setting value if Client has it', async () => {
 
+			const session = getSession({ [entity]: { [settingName]: value } });
+			const clientSettings = session.getSessionInstance(ClientSettings);
+
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-			const settingValue = await ClientSettings
+			const settingValue = await clientSettings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession({ [entity]: { [settingName]: value } }))
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, value);
@@ -138,84 +154,72 @@ describe('ClientSettings', () => {
 
 		it('Should resolve the setting value if Client has it and then use it from cache on consecutive calls', async () => {
 
-			sinon.spy(ClientSettings, 'getForClient');
+			const client1Settings = getSession({ [entity]: { [settingName]: value } }).getSessionInstance(ClientSettings);
+			const client2Settings = getSession().getSessionInstance(ClientSettings);
+
+			sinon.spy(ClientSettings.prototype, 'getForClient');
 
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-			const settingValue = await ClientSettings
+			const settingValue = await client1Settings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession({ [entity]: { [settingName]: value } }))
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, value);
 
-			const secondSettingValue = await ClientSettings
+			const secondSettingValue = await client2Settings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession())
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(secondSettingValue, value);
 
-			sinon.assert.calledOnce(ClientSettings.getForClient);
+			sinon.assert.calledOnce(ClientSettings.prototype.getForClient);
 		});
 
 		it('Should resolve the setting value if Client has it and then use it from cache on consecutive calls (with multiple clients)', async () => {
 
-			sinon.spy(ClientSettings, 'getForClient');
+			const client1Settings = getSession({ [entity]: { [settingName]: value } }).getSessionInstance(ClientSettings);
+			const client2Settings = getSession({ [entity]: { [settingName]: 'another' } }, 'other-client').getSessionInstance(ClientSettings);
+
+			sinon.spy(ClientSettings.prototype, 'getForClient');
 
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-			const settingValue = await ClientSettings
+			const settingValue = await client1Settings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession({ [entity]: { [settingName]: value } }))
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, value);
 
-			const secondSettingValue = await ClientSettings
+			const secondSettingValue = await client1Settings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession())
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(secondSettingValue, value);
 
-			const secondClientSettingValue = await ClientSettings
+			const secondClientSettingValue = await client2Settings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession({ [entity]: { [settingName]: 'another' } }, 'other-client'))
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(secondClientSettingValue, 'another');
 
-			const secondClientSecondSettingValue = await ClientSettings
-				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession(undefined, 'other-client'))
-				.get(entity, settingName);
-
-			assert.deepStrictEqual(secondClientSecondSettingValue, 'another');
-
-			const settingValueFromFirstClient = await ClientSettings
-				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession())
-				.get(entity, settingName);
-
-			assert.deepStrictEqual(settingValueFromFirstClient, value);
-
-			sinon.assert.calledTwice(ClientSettings.getForClient);
+			sinon.assert.calledTwice(ClientSettings.prototype.getForClient);
 		});
 
 		it('Should resolve the setting value from default value if it\'s not found', async () => {
+
+			const clientSettings = getSession().getSessionInstance(ClientSettings);
 
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-			const settingValue = await ClientSettings
+			const settingValue = await clientSettings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setSession(getSession())
 				.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, 'sample-default-value');
@@ -223,38 +227,39 @@ describe('ClientSettings', () => {
 
 		it('Should try to fetch the setting value from Client if it\'s found, once for each setting', async () => {
 
-			sinon.spy(ClientSettings, 'getForClient');
+			const clientSettings = getSession({
+				[entity]: {
+					[settingName]: value,
+					'other-sample-setting': 0
+				}
+			}).getSessionInstance(ClientSettings);
+
+			sinon.spy(ClientSettings.prototype, 'getForClient');
 
 			const uniqueDefinitionPath = getUniqueDefinitionPath();
 
 			mockRequire(uniqueDefinitionPath, settingsDefinition);
 
-			ClientSettings
+			clientSettings
 				.setSettingsDefinitionPath(uniqueDefinitionPath)
-				.setCacheTime(60)
-				.setSession(getSession({
-					[entity]: {
-						[settingName]: value,
-						'other-sample-setting': 0
-					}
-				}));
+				.setCacheTime(60);
 
 			// Get first setting. This should go to the DB
-			const settingValue = await ClientSettings
+			const settingValue = await clientSettings
 				.get(entity, settingName);
 
 			// Get two more times. This should resolve from cache
-			await ClientSettings.get(entity, settingName);
-			await ClientSettings.get(entity, settingName);
+			await clientSettings.get(entity, settingName);
+			await clientSettings.get(entity, settingName);
 
 			assert.deepStrictEqual(settingValue, value);
 
 			// Now get a different setting. This should go to the DB
-			const otherSettingValue = await ClientSettings.get(entity, 'other-sample-setting');
+			const otherSettingValue = await clientSettings.get(entity, 'other-sample-setting');
 
 			assert.deepStrictEqual(otherSettingValue, 0);
 
-			sinon.assert.calledOnce(ClientSettings.getForClient);
+			sinon.assert.calledOnce(ClientSettings.prototype.getForClient);
 		});
 	});
 

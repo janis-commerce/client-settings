@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.0] - 2025-04-29
+### Changed
+- Now requires instantiating **ClientSettings** using the session from `@janiscommerce/api-session`.
+
 ## [5.0.0] - 2023-09-18
 ### Changed
 - Update [@janiscommerce/api](https://www.npmjs.com/package/@janiscommerce/api) to version 8.0.0

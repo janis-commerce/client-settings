@@ -6,7 +6,7 @@
 
 A package to handle client settings. This package allows you to declare all the settings available for each entity of your service.
 
-It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis), also uses Client data from [client-creator](https://www.npmjs.com/package/@janiscommerce/client-creator), etc.
+It also provides you with a class to easily get the settings value per client, with a fallback in the default values you have previously defined. You have many other tools to help you, like two APIs to get and update the settings, sample schemas for them, hooks for [sls-helper](https://www.npmjs.com/package/sls-helper) and [sls-helper-plugin-janis](https://www.npmjs.com/package/sls-helper-plugin-janis).
 
 ## Installation
 ```sh
@@ -18,7 +18,7 @@ npm install @janiscommerce/client-settings
 ### Settings definition
 
 Settings must be previously defined in a "definition file". The default definition file location is `project-path/schemas/settings/index.js`.
-If you want to get it from somewhere else, you can call `ClientSettings.setSettingsDefinitionPath()` (remember to use an absolut path).
+If you want to get it from somewhere else, you can call `ClientSettings.setSettingsDefinitionPath()` (remember to use an absolute path).
 
 The definition file is just a JS file that exports the following structure (with as many settings as needed):
 
@@ -68,13 +68,15 @@ If the setting property `saveEmptyValue` is set to `false`, any of the following
 
 To fetch the clients settings, you must use the `ClientSettings` class. You **must** always set a [session](https://npmjs.org/package/@janiscommerce/api-session) before fetching any setting.
 
+> From v6, the ClientSettings must be an instance created with `@janiscommerce/api-session`
+
 ```js
 const { ClientSettings } = require('@janiscommerce/client-settings');
 
 // mySession must be an instance of @janiscommerce/api-session
-ClientSettings.setSession(mySession);
+const clientSettings = mySession.getSessionInstance(ClientSettings);
 
-const productDefaultStatus = ClientSettings.get('product', 'defaultStatus');
+const productDefaultStatus = await clientSettings.get('product', 'defaultStatus');
 
 console.log(productDefaultStatus); // For example, 'active'
 ```
@@ -148,6 +150,12 @@ Here's an example that you must customize with your own settings: [`edit.yml`](d
 `const { ClientSettings } = require('@janiscommerce/client-settings');`
 
 To fetch client settings or their default values.
+
+⚠️ Breaking Changes in v6.0.0
+
+This version introduces a new, class-based API that is not backward compatible with previous versions.
+
+The package now exports a class, `ClientSettings`, that must be instantiated. Caching is handled per client and per path internally
 
 #### **setSession(session)**
 
