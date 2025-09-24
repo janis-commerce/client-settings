@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@janiscommerce/api": "^8.0.3",
+    "@janiscommerce/sns": "^2.1.0",
     "@janiscommerce/superstruct": "^1.2.2",
     "node-cache": "^5.1.2"
   }

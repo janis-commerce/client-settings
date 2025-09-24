@@ -61,4 +61,20 @@ describe('Servelress Helper Hooks', () => {
 		assert.deepStrictEqual(ServerlessHelperHooks({ includes: ['foo', 'bar'] }), customConfig);
 	});
 
+	it('Return add custom env variables to the basic configuration if they are passed', () => {
+
+		const customConfig = cloneDeep(defaultConfig);
+		customConfig[1][1].functionRawProps = {
+			environment: {
+				SETTINGS_UPDATED_SNS_TOPIC_ARN: 'arn:aws:sns:us-east-1:000000000000:settingsUpdated'
+			}
+		};
+
+		assert.deepStrictEqual(ServerlessHelperHooks({
+			apiPutEnvVariables: {
+				SETTINGS_UPDATED_SNS_TOPIC_ARN: 'arn:aws:sns:us-east-1:000000000000:settingsUpdated'
+			}
+		}), customConfig);
+	});
+
 });

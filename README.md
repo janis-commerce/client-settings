@@ -107,6 +107,14 @@ module.exports = helper({
 		// 	]
 		// })
 
+		// You can pass an object that accepts an object of environment variables for the PUT API.
+		// For example:
+		// ...ServerlessHelperHooks({
+		// 	apiPutEnvVariables: {
+		// 		SETTINGS_UPDATED_SNS_TOPIC_ARN: 'arn:aws:sns:us-east-1:000000000000:settingsUpdated'
+		// 	}
+		// })
+
 	]
 });
 ```
@@ -138,6 +146,46 @@ The PUT Schema: [`put.yml`](docs/schemas/setting/put.yml)
 - An Edit view schema:
 
 Here's an example that you must customize with your own settings: [`edit.yml`](docs/view-schemas/setting/edit.yml)
+
+### Settings change event
+
+Since v6.1.0 you can publish an SNS event every time a client updates its settings through the PUT API.
+
+**Requirements**
+
+- The `PutSettingApi` must define a `getTopicArn(newSettings)` method that returns the SNS Topic ARN.
+- You may pass `apiPutEnvVariables` to the `ServerlessHelperHooks` to set environment variables for the PUT API.
+
+**Optional extension points**
+
+- You may override `formatEventData(newSettings)` to customize the payload and message attributes.
+- Use `newSettings` (defaults already merged into request data) to format or enrich the payload.
+
+**Full example**
+
+```js
+const { PutSettingApi } = require('@janiscommerce/client-settings');
+
+module.exports = class ProductSettingsPutApi extends PutSettingApi {
+
+	getTopicArn(newSettings) {
+		return process.env.PRODUCT_SETTINGS_TOPIC_ARN;
+	}
+
+	formatEventData(newSettings) {
+		// This is the default implementation
+		return {
+			content: {
+				entity: this.entity,
+				settings: newSettings
+			},
+			attributes: {
+				entity: this.entity
+			}
+		};
+	}
+};
+```
 
 ### Important!
 

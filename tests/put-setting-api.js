@@ -1,11 +1,16 @@
 'use strict';
 
+const path = require('path');
+
 const mockRequire = require('mock-require');
 const APITest = require('@janiscommerce/api-test');
-const path = require('path');
+const { SnsTrigger } = require('@janiscommerce/sns');
 
 const { PutSettingApi } = require('../lib/index');
 const DefinitionFetcher = require('../lib/definition-fetcher');
+
+const PutApiWithEvent = require('./resources/put-api-with-event');
+const PutApiWithEventAndFormatter = require('./resources/put-api-with-event-and-formatter');
 
 const clientPath = path.join(process.cwd(), process.env.MS_PATH || '', 'models', 'client');
 
@@ -280,4 +285,98 @@ describe('Setting Api Put Tests', () => {
 			}
 		}
 	]));
+
+	context('When API publishes event', () => {
+
+		const requestData = {
+			'sample-setting': 'new-setting-value'
+		};
+
+		const fullSettingsUpdated = {
+			'sample-setting': 'new-setting-value',
+			'other-sample-setting': 0
+		};
+
+		APITest(PutApiWithEvent, '/api/setting/sample-entity', [
+			{
+				description: 'Should publish event if topicArn is set',
+				session: true,
+				request: {
+					data: requestData,
+					pathParameters: ['sample-entity']
+				},
+				response: { code: 200 },
+				before: sinon => {
+					mockRequire(defaultDefinitionPath, settingsDefinition);
+					mockRequire(clientPath, ClientModel);
+
+					sinon.stub(ClientModel.prototype, 'update').resolves(1);
+					sinon.stub(SnsTrigger.prototype, 'publishEvent').resolves();
+				},
+				after: (response, sinon) => {
+					sinon.assert.calledOnceWithExactly(SnsTrigger.prototype.publishEvent, 'arn:aws:sns:us-east-1:000000000000:sample-topic', {
+						content: {
+							entity: 'sample-entity',
+							settings: fullSettingsUpdated
+						},
+						attributes: { entity: 'sample-entity' }
+					});
+				}
+			}
+		]);
+
+		APITest(PutApiWithEventAndFormatter, '/api/setting/sample-entity', [
+			{
+				description: 'Should publish a custom event content if formatEventData is overridden',
+				session: true,
+				request: {
+					data: requestData,
+					pathParameters: ['sample-entity']
+				},
+				response: { code: 200 },
+				before: sinon => {
+					mockRequire(defaultDefinitionPath, settingsDefinition);
+					mockRequire(clientPath, ClientModel);
+
+					sinon.stub(ClientModel.prototype, 'update').resolves(1);
+					sinon.stub(SnsTrigger.prototype, 'publishEvent').resolves();
+				},
+				after: (response, sinon) => {
+					sinon.assert.calledOnceWithExactly(SnsTrigger.prototype.publishEvent, 'arn:aws:sns:us-east-1:000000000000:sample-topic', {
+						content: {
+							custom: true
+						}
+					});
+				}
+			},
+			{
+				description: 'Should allow custom attributes',
+				session: true,
+				request: {
+					data: {
+						'sample-setting': 'set-attribute'
+					},
+					pathParameters: ['sample-entity']
+				},
+				response: { code: 200 },
+				before: sinon => {
+					mockRequire(defaultDefinitionPath, settingsDefinition);
+					mockRequire(clientPath, ClientModel);
+
+					sinon.stub(ClientModel.prototype, 'update').resolves(1);
+					sinon.stub(SnsTrigger.prototype, 'publishEvent').resolves();
+				},
+				after: (response, sinon) => {
+					sinon.assert.calledOnceWithExactly(SnsTrigger.prototype.publishEvent, 'arn:aws:sns:us-east-1:000000000000:sample-topic', {
+						content: {
+							custom: true
+						},
+						attributes: {
+							customAttibute: 'ok'
+						}
+					});
+				}
+			}
+		]);
+	});
 });
