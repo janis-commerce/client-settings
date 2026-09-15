@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- `build-types` failing against modern `@types/node` releases
+
+### Changed
+- Updated `typescript` to `^5.9.3`. Emitted declarations are now more precise (optional getters are typed as `| undefined`)
 
 ## [6.1.0] - 2025-09-25
 ### Added
